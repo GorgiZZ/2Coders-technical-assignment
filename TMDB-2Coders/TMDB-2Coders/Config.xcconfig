@@ -1,0 +1,13 @@
+//
+//  Config.xcconfig
+//  TMDB-2Coders
+//
+//  Created by Gjorgji Zhupan on 9.5.25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+TMDB_API_KEY = 3d71c6ba0c40bb32abcaa3c2b432a828
+
+TMDB_API_READ_ACCESS_TOKEN = eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzZDcxYzZiYTBjNDBiYjMyYWJjYWEzYzJiNDMyYTgyOCIsIm5iZiI6MS43NDY4MjM5OTk2MzkwMDAyZSs5LCJzdWIiOiI2ODFlNmIzZjI0MzdlNTNmMzU4YzcxODUiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.6NU4eFehmcsPnbgfrwCVYeile8xk9NDFJFAzEJKJSOc
