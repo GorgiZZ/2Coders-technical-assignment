@@ -1,5 +1,5 @@
 //
-//  MovieGridItemView.swift
+//  CompactMovieItemView.swift
 //  TMDB-2Coders
 //
 //  Created by Gjorgji Zhupan on 10.5.25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MovieGridItemView: View {
+struct CompactMovieItemView: View {
     let movie: Movie
     @State private var isLoadingImage: Bool = true
     @State private var uiImage: UIImage?
@@ -77,5 +77,5 @@ struct MovieGridItemView: View {
 }
 
 #Preview {
-    MovieGridItemView(movie: .dummy())
+    CompactMovieItemView(movie: .dummy())
 }

@@ -51,7 +51,7 @@ final class Movie: Codable {
         genres.map { $0.name }.forEach {
             result.append($0 + ", ")
         }
-        result.removeLast(2)
+        result.removeLast(result.count >= 2 ? 2 : 0)
         return result
     }
     

@@ -14,6 +14,8 @@ struct TrendingMoviesView: View {
     
     @State var viewModel: TrendingMoviesViewModel = TrendingMoviesViewModel()
     
+    @State private var compactView: Bool = true
+    
     // MARK: UI Helper
     @State private var columns: Int = 2
     private let aspectRatio: CGFloat =  4 / 3
@@ -21,25 +23,33 @@ struct TrendingMoviesView: View {
     var body: some View {
         // TODO: Add a search bar
         
-        // TODO: Add compact / expanded view
-        // Use MovieGridItemView for compact
-        // Use a view similar to Details' horizontal layout for epanded
         NavigationStack {
             GeometryReader { geo in
-                ScrollView {
-                    LazyVGrid(columns: (0..<columns).map { _ in GridItem(.flexible()) }) {
-                        ForEach(trendingMovies, id: \.id) { movie in
-                            NavigationLink {
-                                MovieDetailsView(movie: movie) //, modelContext: modelContext)
-                            } label: {
-                                // TODO: Change depending on compact / expanded
-                                MovieGridItemView(movie: movie)
-                                    .frame(height: geo.size.width / CGFloat(columns) * aspectRatio)
+                VStack(alignment: .trailing) {
+                    // TODO: Search bar here
+                    
+                    Toggle("Compact view", isOn: $compactView)
+                    
+                    ScrollView {
+                        LazyVGrid(columns: (0..<columns).map { _ in GridItem(.flexible()) }) {
+                            ForEach(trendingMovies, id: \.id) { movie in
+                                NavigationLink {
+                                    MovieDetailsView(movie: movie)
+                                } label: {
+                                    if compactView {
+                                        CompactMovieItemView(movie: movie)
+                                            .frame(height: geo.size.width / CGFloat(columns) * aspectRatio)
+                                    } else {
+                                        ListedMovieItemView(movie: movie)
+                                            .frame(height: geo.size.width / CGFloat(columns + 1) * aspectRatio)
+                                    }
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
                     }
-                    .padding()
                 }
+                .padding()
             }
             .navigationTitle("Trending movies")
             .navigationBarTitleDisplayMode(.automatic)
@@ -48,6 +58,9 @@ struct TrendingMoviesView: View {
             // Setting the context instead of initializing the viewModel prevents unnecessary requests
             viewModel.modelContext = modelContext
             
+            columns = numberOfColumnsFor(orientation: UIDevice.current.orientation)
+        }
+        .onChange(of: compactView) { oldValue, newValue in
             columns = numberOfColumnsFor(orientation: UIDevice.current.orientation)
         }
         .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
@@ -64,11 +77,11 @@ private extension TrendingMoviesView {
     func numberOfColumnsFor(orientation: UIDeviceOrientation) -> Int {
         switch orientation {
         case .portrait, .portraitUpsideDown:
-            return 2
+            return compactView ? 2 : 1
         case .landscapeLeft, .landscapeRight:
-            return 3
+            return compactView ? 3 : 2
         default:
-            return 2
+            return compactView ? 2 : 1
         }
     }
 }
