@@ -64,6 +64,7 @@ struct MovieDetailsView: View {
             
             Text(movie.overview)
         }
+        .padding()
     }
     
     private var horizontalLayout: some View {
@@ -81,6 +82,7 @@ struct MovieDetailsView: View {
             }
             .padding()
         }
+        .padding()
     }
     
     // MARK: Elements
