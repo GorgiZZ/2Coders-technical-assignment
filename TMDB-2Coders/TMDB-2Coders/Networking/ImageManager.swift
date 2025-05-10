@@ -18,15 +18,19 @@ final class ImageManager: TMDBRouter {
     
     static func getImage(at path: String) async throws -> UIImage {
         let (imageData, _) = try await URLSession.shared.data(for: router.urlRequestForImage(at: path))
-                guard let uiImage = UIImage(data: imageData) else { throw ImageManagerError.InvalidImageData }
-                return uiImage
+        
+        guard let uiImage = UIImage(data: imageData)
+        else { throw ImageManagerError.InvalidImageData }
+        
+        return uiImage
     }
 }
 
 private class ImageRouter: TMDBRouter {
     private let imageURL: String = "https://image.tmdb.org/t/p/"
     
-    func urlRequestForImage(at path: String, forSize size: ImageSize = .w500) throws -> URLRequest {
+    func urlRequestForImage(at path: String,
+                            forSize size: ImageSize = .w500) throws -> URLRequest {
         guard let url = URL(string: imageURL + size.rawValue + path)
         else { throw TMDBRouterError.InvalidURL }
         

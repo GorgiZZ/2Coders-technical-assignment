@@ -11,26 +11,38 @@ import os
 
 class TrendingMoviesViewModel {
     private(set) var currentPage: Int = 0
-    var modelContext: ModelContext
+    var modelContext: ModelContext?
     
-    init(modelContext: ModelContext) {
-        self.modelContext = modelContext
-        
+    init() {
         Task {
             try await getTrendingMovies()
+        }
+        
+        Task {
+            try await getGenres()
         }
     }
     
     private func getTrendingMovies() async throws {
-        let response = try await TMDBAPIManager.getTrendingMovies()
+        let response: TMDBResponse<Movie> = try await TMDBAPIManager.getTrendingMovies()
         
         self.currentPage = response.page // TODO: Use in request, but it seems it's not supported in API?
         let movies = response.results
         
         movies.forEach {
-            modelContext.insert($0)
+            modelContext?.insert($0)
         }
         
-        try modelContext.save()
+        try modelContext?.save()
+    }
+    
+    private func getGenres() async throws {
+        let genres: [String: [MovieGenre]] = try await TMDBAPIManager.getGenres()
+        
+        (genres["genres"] ?? []).forEach {
+            modelContext?.insert($0)
+        }
+        
+        try modelContext?.save()
     }
 }

@@ -9,17 +9,20 @@ import Foundation
 
 enum TMDBAPIEndpoint {
     case TrendingMovies
+    case MovieGenres
     
     var path: String {
         switch self {
         case .TrendingMovies:
-            return "trending/movie/day" // TODO: Add time_window
+            return "trending/movie/day" // TODO: Add variable time_window?
+        case .MovieGenres:
+            return "genre/movie/list"
         }
     }
     
     var method: String {
         switch self {
-        case .TrendingMovies:
+        case .TrendingMovies, .MovieGenres:
             return "GET"
         }
     }

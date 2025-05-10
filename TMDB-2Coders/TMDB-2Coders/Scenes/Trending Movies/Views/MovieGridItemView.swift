@@ -52,7 +52,7 @@ struct MovieGridItemView: View {
             .allowsHitTesting(false) // Pass touches to the view below
             .background {
                 LinearGradient(colors:(0..<3).map { _ in Color.clear } +
-                               [Color.black],
+                               (0..<2).map { _ in Color.black.opacity(0.8) },
                                startPoint: .top,
                                endPoint: .bottom)
             }
@@ -77,13 +77,5 @@ struct MovieGridItemView: View {
 }
 
 #Preview {
-    MovieGridItemView(movie: Movie(backdropPath: "",
-                                   title: "Test Movie",
-                                   originalLanguage: "",
-                                   originalTitle: "",
-                                   overview: "",
-                                   posterPath: "",
-                                   mediaType: "",
-                                   genreIDs: [0],
-                                   releaseDate: ""))
+    MovieGridItemView(movie: .dummy())
 }
