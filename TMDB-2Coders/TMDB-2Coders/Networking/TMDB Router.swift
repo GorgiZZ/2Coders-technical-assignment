@@ -57,8 +57,8 @@ class TMDBRouter {
 }
 
 // MARK: Auth
-private extension TMDBRouter {
-    private func getApiToken() -> String {
+extension TMDBRouter {
+    func getApiToken() -> String {
         guard let apiToken = Bundle.main.object(forInfoDictionaryKey: "API TOKEN") as? String
         else { return "" }
         
@@ -67,7 +67,7 @@ private extension TMDBRouter {
 }
 
 // MARK: - Errors
-private enum TMDBRouterError: LocalizedError {
+enum TMDBRouterError: LocalizedError {
     case InvalidURL
     
     var errorDescription: String? {

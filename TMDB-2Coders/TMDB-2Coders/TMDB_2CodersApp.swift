@@ -12,7 +12,7 @@ import SwiftData
 struct TMDB_2CodersApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Movie.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,7 +25,7 @@ struct TMDB_2CodersApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TrendingMoviesView()
         }
         .modelContainer(sharedModelContainer)
     }
