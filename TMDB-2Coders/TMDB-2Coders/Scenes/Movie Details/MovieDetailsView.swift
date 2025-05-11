@@ -13,8 +13,6 @@ struct MovieDetailsView: View {
     @Environment(\.modelContext) private var modelContext
     
     @State private var orientation: UIDeviceOrientation = UIDevice.current.orientation
-    @State private var loadingPoster: Bool = true
-    @State private var posterImage: UIImage?
     
     private var deviceIsInPortrait: Bool {
         switch orientation {
@@ -33,16 +31,6 @@ struct MovieDetailsView: View {
                 verticalLayout
             } else {
                 horizontalLayout
-            }
-        }
-        .onAppear {
-            loadingPoster = true
-            Task {
-                defer { loadingPoster = false }
-                
-                // TODO: Implement image cache
-                let image = try await ImageManager.getImage(at: movie.posterPath)
-                await MainActor.run { self.posterImage = image }
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
@@ -88,12 +76,12 @@ struct MovieDetailsView: View {
     // MARK: Elements
     private var posterImageView: some View {
         Group {
-            if loadingPoster {
+            if movie.isLoadingImage {
                 ProgressView()
                     .progressViewStyle(.circular)
             } else {
-                if let posterImage {
-                    Image(uiImage: posterImage)
+                if let uiImage = movie.uiImage {
+                    Image(uiImage: uiImage)
                         .resizable()
                 } else {
                     Image(systemName: "photo")

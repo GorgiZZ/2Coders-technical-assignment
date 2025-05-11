@@ -8,19 +8,17 @@
 import SwiftUI
 
 struct CompactMovieItemView: View {
-    let movie: Movie
-    @State private var isLoadingImage: Bool = true
-    @State private var uiImage: UIImage?
+    @ObservedObject var movie: Movie
     
     var body: some View {
         ZStack {
             GeometryReader { geo in // Read the cell's size
                 Group {
-                    if isLoadingImage {
+                    if movie.isLoadingImage {
                         ProgressView()
                             .progressViewStyle(.circular)
                     } else {
-                        if let uiImage {
+                        if let uiImage = movie.uiImage {
                             Image(uiImage: uiImage)
                                 .resizable()
                         } else {
@@ -63,16 +61,6 @@ struct CompactMovieItemView: View {
                 .fill(.gray)
         }
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .onAppear {
-            isLoadingImage = true
-            Task {
-                defer { isLoadingImage = false }
-                
-                // TODO: Implement image cache
-                let image = try await ImageManager.getImage(at: movie.posterPath)
-                await MainActor.run { self.uiImage = image }
-            }
-        }
     }
 }
 

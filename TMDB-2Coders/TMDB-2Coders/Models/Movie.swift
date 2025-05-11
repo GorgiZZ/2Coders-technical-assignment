@@ -7,9 +7,10 @@
 
 import Foundation
 import SwiftData
+import UIKit
 
 @Model
-final class Movie: Codable {
+final class Movie: ObservableObject, Codable {
     var adult: Bool = true
     var backdropPath: String
     @Attribute(.unique) var id: Int = 0
@@ -25,6 +26,26 @@ final class Movie: Codable {
     var video: Bool = true
     var voteAverage: Double = 0
     var voteCount: Int = 0
+    
+    var isLoadingImage: Bool {
+        if !imageLoadInProgress { // Allow download
+            imageLoadInProgress = true // Prevents further requests
+            Task {
+                try await ImageManager.shared.getImage(at: posterPath) { uiImage in
+                    DispatchQueue.main.async { self.uiImage = uiImage }
+                }
+            }
+        }
+        
+        return uiImage == nil
+    }
+    
+    /// A helper bool to prevent multiple image requests when isLoadingImage is checked
+    @Transient
+    private var imageLoadInProgress = false
+    
+    @Transient
+    @Published var uiImage: UIImage?
     
     /// The movie's releaseDate, reformatted as dd.MM.yyyy
     var formattedReleaseDate: String {

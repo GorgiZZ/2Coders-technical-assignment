@@ -29,20 +29,24 @@ class TrendingMoviesViewModel {
         self.currentPage = response.page // TODO: Use in request, but it seems it's not supported in API?
         let movies = response.results
         
-        movies.forEach {
-            modelContext?.insert($0)
+        try await MainActor.run {
+            movies.forEach {
+                modelContext?.insert($0)
+            }
+            
+            try modelContext?.save()
         }
-        
-        try modelContext?.save()
     }
     
     private func getGenres() async throws {
         let genres: [String: [MovieGenre]] = try await TMDBAPIManager.getGenres()
         
-        (genres["genres"] ?? []).forEach {
-            modelContext?.insert($0)
+        try await MainActor.run {
+            (genres["genres"] ?? []).forEach {
+                modelContext?.insert($0)
+            }
+            
+            try modelContext?.save()
         }
-        
-        try modelContext?.save()
     }
 }

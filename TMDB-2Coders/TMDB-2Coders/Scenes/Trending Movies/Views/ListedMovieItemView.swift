@@ -9,10 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct ListedMovieItemView: View {
-    let movie: Movie
-    
-    @State private var isLoadingImage: Bool = true
-    @State private var uiImage: UIImage?
+    @ObservedObject var movie: Movie
     
     var body: some View {
         HStack(alignment: .top) {
@@ -44,27 +41,17 @@ struct ListedMovieItemView: View {
                 .fill(.gray)
         }
         .padding()
-        .onAppear {
-            isLoadingImage = true
-            Task {
-                defer { isLoadingImage = false }
-                
-                // TODO: Implement image cache
-                let image = try await ImageManager.getImage(at: movie.posterPath)
-                await MainActor.run { self.uiImage = image }
-            }
-        }
     }
     
     // MARK: Elements
     private var posterImageView: some View {
         GeometryReader { geo in
             Group {
-                if isLoadingImage {
+                if movie.isLoadingImage {
                     ProgressView()
                         .progressViewStyle(.circular)
                 } else {
-                    if let uiImage {
+                    if let uiImage = movie.uiImage {
                         Image(uiImage: uiImage)
                             .resizable()
                     } else {

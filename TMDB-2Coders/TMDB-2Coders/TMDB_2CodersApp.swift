@@ -13,12 +13,17 @@ struct TMDB_2CodersApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Movie.self,
-            MovieGenre.self
+            MovieGenre.self,
+            ImageCacheItem.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            let modelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
+            // Setting the same model context to ensure no conflicts arise when saving ImageCacheItems
+            ImageManager.shared.modelContext = modelContainer.mainContext
+            
+            return modelContainer
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
